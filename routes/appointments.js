@@ -1,53 +1,74 @@
+// routes/appointments.js
+
 const express = require('express');
 const router = express.Router();
-const Appointment = require('../models/Appointment');
+const Appointment =
+	require('../models/Appointment');
 
 // Get all appointments
-router.get('/', async (req, res) => {
-    try {
-        const appointments = await Appointment.find();
-        res.json(appointments);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
+router.route('/').get((req, res) => {
+	Appointment.find()
+		.then(appointments =>
+			res.json(appointments))
+		.catch(err =>
+			res.status(400).json('Error: ' + err));
 });
 
 // Add new appointment
-router.post('/add', async (req, res) => {
-    const { patientName, doctorName, date, phone, email, dob, diseaseType } = req.body;
-    try {
-        const newAppointment = new Appointment({ patientName, doctorName, date, phone, email, dob, diseaseType });
-        const savedAppointment = await newAppointment.save();
-        res.json(savedAppointment);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
+router.route('/add').post((req, res) => {
+	const { patientName, doctorName, date, phone, email, dob, diseaseType, bookingStatus } = req.body;
+	const newAppointment =
+		new Appointment({ patientName, doctorName, date, phone, email, dob, diseaseType, bookingStatus });
+
+	newAppointment.save()
+		.then(savedAppointment => res.json(savedAppointment))
+		.catch(err => res.status(400).json('Error: ' + err));
 });
 
 // Update appointment data
-router.put('/update/:id', async (req, res) => {
-    try {
-        const appointment = await Appointment.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!appointment) {
-            return res.status(404).json({ error: 'Appointment not found' });
-        }
-        res.json('Appointment updated!');
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
+router.route('/update/:id').post((req, res) => {
+	Appointment.findById(req.params.id)
+		.then(appointment => {
+			appointment.patientName =
+				req.body.patientName;
+			appointment.doctorName =
+				req.body.doctorName;
+			appointment.date =
+				req.body.date;
+			appointment.phone =
+				req.body.phone;
+			appointment.email =
+				req.body.email;
+			appointment.dob =
+				req.body.dob;
+			appointment.diseaseType =
+				req.body.diseaseType;
+			appointment.bookingStatus =
+				req.body.bookingStatus;
+
+			appointment.save()
+				.then(
+					() =>
+						res.json('Appointment updated!'))
+				.catch(
+					err => res.status(400)
+						.json('Error: ' + err));
+		})
+		.catch(
+			err => res.status(400)
+				.json('Error: ' + err));
 });
 
 // Delete appointment
-router.delete('/delete/:id', async (req, res) => {
-    try {
-        const deletedAppointment = await Appointment.findByIdAndDelete(req.params.id);
-        if (!deletedAppointment) {
-            return res.status(404).json({ error: 'Appointment not found' });
-        }
-        res.json('Appointment deleted.');
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
-});
+router.route('/delete/:id')
+	.delete((req, res) => {
+		Appointment.findByIdAndDelete(req.params.id)
+			.then(
+				() => res
+					.json('Appointment deleted.'))
+			.catch(
+				err => res
+					.status(400).json('Error: ' + err));
+	});
 
 module.exports = router;

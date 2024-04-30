@@ -9,6 +9,7 @@ const appointmentSchema = new Schema({
     email: { type: String, required: true },
     dob: { type: Date, required: true },
     diseaseType: { type: String, required: true },
+    bookingStatus: { type: String,  },
     // Add more fields as needed
 }, { timestamps: true }); // Adding timestamps for createdAt and updatedAt
 
