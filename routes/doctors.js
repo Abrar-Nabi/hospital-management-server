@@ -18,10 +18,10 @@ router.route('/').get((req, res) => {
 // Add new doctor
 router.route('/add')
     .post((req, res) => {
-        const { name, specialty } = req.body;
+        const { name, specialty,phone,email } = req.body;
  
         const newDoctor =
-            new Doctor({ name, specialty });
+            new Doctor({ name, specialty,phone,email, });
  
         newDoctor.save()
             // Return the savedDoctor object
@@ -46,6 +46,8 @@ router.route('/update/:id')
  
                 doctor.name = req.body.name;
                 doctor.specialty = req.body.specialty;
+                doctor.phone = req.body.phone;
+                doctor.email = req.body.email;
  
                 doctor.save()
                     .then(() => res.json('Doctor updated!'))

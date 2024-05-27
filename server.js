@@ -12,6 +12,9 @@ const patientsRouter = require('./routes/patients');
 const doctorsRouter = require('./routes/doctors');
 const appointmentsRouter = require('./routes/appointments');
 const adminRouter = require('./routes/auth');
+const users = require('./routes/getallusers');
+const department = require('./routes/department');
+
 
 
 
@@ -43,7 +46,10 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 app.use('/patients', patientsRouter);
 app.use('/doctors', doctorsRouter);
 app.use('/appointments', appointmentsRouter);
+app.use('/allusers', users);
+app.use('/departments', department);
 app.use('/', adminRouter);
+
 
 
 // Start the server

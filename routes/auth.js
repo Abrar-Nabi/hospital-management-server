@@ -60,7 +60,7 @@ router.post('/login', async (req, res) => {
         const username = user.username; // Assuming userType is a field in your User model
 
         // Create and send JWT token along with userType
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1m' });
         res.status(200).json({ message: 'Login successful', token, userType,username });
     } catch (err) {
         res.status(500).json({ error: err.message });
